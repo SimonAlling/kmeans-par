@@ -12,8 +12,10 @@ cabal-version:       >=1.10
 library
   exposed-modules:
     Algorithms.Lloyd.Sequential,
-    Algorithms.Lloyd.Strategies
+    Algorithms.Lloyd.Strategies,
+    Data.Metric
   other-modules:
+    Control.Applicative.Extras,
     Data.Functor.Extras,
     Data.Vector.Split
   other-extensions:
@@ -22,8 +24,7 @@ library
     base == 4.*,
     vector,
     semigroups,
-    parallel,
-    metric
+    parallel
   hs-source-dirs:
     src
   ghc-options:
@@ -45,8 +46,7 @@ benchmark kmeans-benchmark
     normaldistribution,
     kmeans-par,
     deepseq,
-    vector,
-    metric
+    vector
   ghc-options:
     -threaded -O2 -with-rtsopts=-N -rtsopts
   default-language:
@@ -56,15 +56,13 @@ test-suite spec
   type: 
     exitcode-stdio-1.0
   hs-source-dirs:
-    src,
-    test
+    test,src
   main-is:
     Spec.hs
   build-depends:
     base == 4.*,
     hspec >= 1.5,
     normaldistribution,
-    metric,
     parallel,
     semigroups,
     vector,

@@ -27,14 +27,17 @@ points to clusters:
 We can combine two vectors of some same type $t$ provided we know how to
 combine two $t$s:
 
-> instance Semigroup a => Semigroup (Vector a) where
->   (<>) = zipWith (<>)
+> (<><>) :: Semigroup a => Vector a -> Vector a -> Vector a
+> (<><>) = zipWith (<>)
+
+(We can't make $Vector a$ an instance of $Semigroup$, because it already is. But
+that instance has $(<>) = (++)$, so we can't use it here.)
 
 Step is modified to, given a partitioned list of points, perform
 classification in parallel:
 
 > step :: Metric a => (Vector Double -> a) -> Vector Cluster -> Vector (Vector Point) -> Vector Cluster
-> step = makeNewClusters . foldr1 (<>) . with (parTraversable rseq) ..: fmap ..: assignPS
+> step = makeNewClusters . foldr1 (<><>) . with (parTraversable rseq) ..: fmap ..: assignPS
 >
 > with :: Strategy a -> a -> a
 > with = flip using
