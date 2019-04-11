@@ -45,6 +45,7 @@ benchmark kmeans-benchmark
     criterion,
     normaldistribution,
     kmeans-par,
+    optparse-applicative,
     deepseq,
     vector
   ghc-options:

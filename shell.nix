@@ -27,6 +27,7 @@ stdenv.mkDerivation {
         normaldistribution
         QuickCheck
         random
+        optparse-applicative
       ]
     )))
     haskellPackages.cabal-install
