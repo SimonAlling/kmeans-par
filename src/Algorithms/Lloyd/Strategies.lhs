@@ -21,7 +21,7 @@ points to clusters:
 > import Data.Metric (Metric(..))
 > import Data.Semigroup (Semigroup(..))
 > import Data.Vector (Vector(..), zipWith, map)
-> import Data.Vector.Split (chunksOf)
+> import Data.Vector.Split (chunkInto)
 > import Algorithms.Lloyd.Sequential (Cluster(..), Point(..), ExpectDivergent(..), PointSum(..), makeNewClusters, assignPS, assign)
 
 We can combine two vectors of some same type $t$ provided we know how to
@@ -54,7 +54,7 @@ be unused for part of the computation.
 > newtype Partitions = Partitions { partitions :: Int }
 >
 > computeClusters :: Metric a => ExpectDivergent -> (Vector Double -> a) -> Partitions -> Vector Point -> Vector Cluster -> Vector Cluster
-> computeClusters (expectDivergent -> expectDivergent) metric = computeClusters' expectDivergent metric 0  ..: chunksOf . partitions
+> computeClusters (expectDivergent -> expectDivergent) metric = computeClusters' expectDivergent metric 0  ..: chunkInto . partitions
 >
 > computeClusters' :: Metric a => Int -> (Vector Double -> a) -> Int -> Vector (Vector Point) -> Vector Cluster -> Vector Cluster
 > computeClusters' expectDivergent metric iterations points clusters 

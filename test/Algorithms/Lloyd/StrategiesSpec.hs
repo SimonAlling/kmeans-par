@@ -7,7 +7,7 @@ import Control.Applicative ((<$>),(<*>))
 import Data.Metric (Euclidean(..))
 import Data.Random.Normal (mkNormals)
 import Data.Vector (Vector, generate, fromList, take, zipWith, length, head)
-import Data.Vector.Split (chunksOf)
+import Data.Vector.Split (chunkInto)
 import Test.Hspec (Spec(..), describe, it)
 import Test.QuickCheck (property, Arbitrary(..), choose)
 
@@ -20,7 +20,7 @@ instance Arbitrary Structure where
   arbitrary = do
     normals   <- mkNormals <$> arbitrary
     (a0,a1,k) <- (,,) <$> choose (1,200) <*> choose (1,200) <*> choose (1,200)
-    let points   = chunksOf a0 . generate a1 $ \n -> Point $ fromList [normals !! n, normals !! (n*2)]
+    let points   = chunkInto a0 . generate a1 $ \n -> Point $ fromList [normals !! n, normals !! (n*2)]
         clusters = zipWith Cluster (fromList [0..k-1]) (take k $ head points)
     return $ Structure points clusters
 
