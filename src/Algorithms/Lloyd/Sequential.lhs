@@ -23,7 +23,7 @@ adapted from Marlow's _Parallel and Concurrent Programming in Haskell_:
 > import Data.Functor.Extras ((..:),(...:))
 > import Data.Metric (Metric(..))
 > import Data.Semigroup (Semigroup(..))
-> import Data.Vector (Vector(..), toList, fromList, create, zip, zipWith, map, empty, replicate, cons, minimumBy, length, head, forM_)
+> import Data.Vector (Vector(..), toList, fromList, create, zip, zipWith, map, replicate, minimumBy, length, head, forM_)
 > import qualified Data.Vector.Mutable as MV (replicate, read, write)
  
 A data point is represented by an n-dimensional real vector:
@@ -103,13 +103,13 @@ centroid:
 >   return (cluster, point `d` centroid cluster)
 >
 > assign :: Metric a => (Vector Double -> a) -> Vector Cluster -> Vector Point -> Vector (Vector Point)
-> assign metric clusters points = create $ do
->   vector <- MV.replicate (length clusters) empty
+> assign metric clusters points = map fromList $ create $ do
+>   vector <- MV.replicate (length clusters) []
 >   points `forM_` \point -> do
 >     let cluster  = closestCluster metric clusters point
 >         position = identifier cluster
 >     points' <- MV.read vector position
->     MV.write vector position $ point `cons` points'
+>     MV.write vector position $ point : points'
 >   return vector
 >
 > assignPS :: Metric a => (Vector Double -> a) -> Vector Cluster -> Vector Point -> Vector PointSum
