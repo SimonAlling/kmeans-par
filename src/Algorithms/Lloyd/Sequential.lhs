@@ -118,9 +118,7 @@ centroid:
 >         length' = length . point $ head points
 >
 > makeNewClusters :: Vector PointSum -> Vector Cluster
-> makeNewClusters vector = do
->   (pointSum, index) <- zip vector $ fromList [0..length vector]
->   return $ toCluster index pointSum
+> makeNewClusters pointSums = zipWith toCluster (fromList [0..length pointSums]) pointSums
 >
 > step :: Metric a => (Vector Double -> a) -> Vector Cluster -> Vector Point -> Vector Cluster
 > step = makeNewClusters ...: assignPS
