@@ -1,4 +1,11 @@
-{ pkgs ? import <nixpkgs> {} }:
+{ pkgs ? import <nixos-19.03> {} }:
+# I couldn't get criterion to build with nixos-19.09 as pkgs, so I explicitly
+# specified nixos-19.03 as the default above. If nix-shell doesn't find it:
+#
+#     nix-channel --add https://nixos.org/channels/nixos-19.03 nixos-19.03
+#     nix-channel --update
+#     nix-shell
+#
 
 with pkgs;
 
