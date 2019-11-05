@@ -4,7 +4,7 @@ synopsis:            Sequential and parallel implementations of Lloyd's algorith
 license:             MIT
 license-file:        LICENSE
 author:              vi
-maintainer:          me@vikramverma.com
+maintainer:          vi <me@vikramverma.com>, Simon Alling <alling.simon@gmail.com>
 category:            Algorithm
 build-type:          Simple
 cabal-version:       >=1.10
