@@ -5,9 +5,14 @@ license:             MIT
 license-file:        LICENSE
 author:              vi
 maintainer:          vi <me@vikramverma.com>, Simon Alling <alling.simon@gmail.com>
+bug-reports:         https://github.com/SimonAlling/kmeans-par/issues
 category:            Algorithm
 build-type:          Simple
 cabal-version:       >=1.10
+
+source-repository head
+  type:     git
+  location: https://github.com/SimonAlling/kmeans-par
 
 library
   exposed-modules:
