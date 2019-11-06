@@ -55,3 +55,66 @@ Explanation:
   * `-N2`: Use 2 Haskell Execution Contexts (threads).
   * `-H1G`: 1 GB heap size.
   * `-A100M`: 100 MB allocation area size (for garbage collection).
+
+
+## Version 2
+
+During my master's thesis, I, Simon Alling, made several improvements to this package, described in this chapter.
+I wrote it before I became a maintainer of the package, and before I knew about [the original repo](https://github.com/fmap/kmeans).
+
+### Linear instead of quadratic complexity
+
+_Credit goes to John Hughes for discovering this._
+
+The sequential implementation in v1 is quadratic in the number of points; in v2 it's instead linear.
+
+The parallel implementation splits the set of points into smaller chunks, so it isn't as heavily impacted by the quadratic behavior.
+This gave rise to inflated parallelism figures, for example a 7× speedup on 4 threads.
+
+Notably, the inner loop in v1 is O(_n² / k_) if it loops over _n_ points, so the overall complexity is improved as _k_ is increased. (In the sequential implementation, _n_ is the total number of points; in the parallel one, it's the number of points per partition.)
+In practice, the most dramatic difference between v1 and v2 is seen when _k_ = 2.
+
+For example, I benchmarked the sequential implementation with _k_ = 2 before and after this change:
+
+| Problem size [points]: | 1k | 2k |  4k |  8k |  16k |
+|-----------------------:|---:|---:|----:|----:|-----:|
+|           Before [ms]: | 14 | 53 | 119 | 548 | 5252 |
+|            After [ms]: | 10 | 29 |  50 | 117 |  267 |
+
+### Different semantics of the `partitions` parameter
+
+From [the source code](https://hackage.haskell.org/package/kmeans-par-1.5.1/docs/src/Algorithms-Lloyd-Strategies.html) of v1:
+
+> This version of k-means takes an additional arguments -- the number of partitions the set of points'll be divided into. This needn't equal the number of processors: […]
+
+However, the actual implementation in v1 is such that `partitions` is the number of points in each partition, not the number of partitions.
+One consequence of this is the surprising fact that on a _p_-core CPU, _p_ is _not_ a good choice for `partitions`; instead, _n_ / _p_ is a good choice for _n_ points.
+
+v2 implements `partitions` as the number of partitions instead.
+
+### Improved benchmark suite
+
+v2 makes it easier to run benchmarks with custom problem sizes, number of clusters and maximum number of iterations.
+
+It also uses larger numbers for the default benchmarks, to produce more reliable and representative results.
+
+### Doesn't depend on `metric`
+
+I couldn't install the original package on any of my machines (with Cabal 1.24/2.0/2.2, GHC 8.0.2/8.2.2/8.4.4), because the `metric` package wouldn't build:
+
+    src/Data/Packed/Matrix/Extras.hs:5:1: error:
+        Could not find module ‘Data.Packed.Matrix’
+        Use -v to see a list of the files searched for.
+      |
+    5 | import Data.Packed.Matrix (Matrix(..), fromLists, trans)
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+v2 re-implements the (very few) necessary parts of `metric` _ad hoc_.
+It may not be optimal, but it works for the benchmarks at least.
+
+Because I couldn't build with `metric` as a dependency, this package exports a `Data.Metric` module which contains only the necessary parts mentioned above.
+Hopefully, we will be able to use `metric` instead in the future.
+
+### Some smaller modifications
+
+I have added the `feager-blackholing` flag, added a `shell.nix` file etc.
