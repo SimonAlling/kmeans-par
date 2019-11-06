@@ -66,9 +66,19 @@ test-suite spec
     test,src
   main-is:
     Spec.hs
+  other-modules:
+    Algorithms.Lloyd.Sequential
+    Algorithms.Lloyd.SequentialSpec
+    Algorithms.Lloyd.Strategies
+    Algorithms.Lloyd.StrategiesSpec
+    Control.Applicative.Extras
+    Data.Functor.Extras
+    Data.Metric
+    Data.Vector.Split
   build-depends:
     base == 4.*,
     hspec >= 1.5,
+    kmeans-par,
     normaldistribution,
     parallel,
     semigroups,
